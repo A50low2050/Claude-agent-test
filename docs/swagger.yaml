@@ -1,15 +1,15 @@
 openapi: 3.0.0
 info:
-  title: Users API
+  title: Custom Swagger UI
   version: 1.0.0
 paths:
   /users:
     get:
+      tags:
+        - Users
       summary: Получить список всех пользователей
       description: Возвращает полный список зарегистрированных пользователей из базы данных.
       operationId: get_users
-      tags:
-        - Users
       responses:
         '200':
           description: Успешный ответ со списком пользователей

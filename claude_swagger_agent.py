@@ -1,10 +1,11 @@
 import os
 import anthropic
-from dotenv import load_dotenv
 
-load_dotenv(".env")
-
-
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 # Инициализация клиента Claude
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
