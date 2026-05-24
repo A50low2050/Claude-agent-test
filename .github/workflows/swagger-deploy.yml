@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: '3.10'
 
       - name: Install Dependencies
         # Устанавливаем библиотеку для работы с API Claude
@@ -30,7 +30,13 @@ jobs:
         run: python claude_swagger_agent.py
 
       - name: Validate Swagger/OpenAPI file
-        uses: char0n/swagger-editor-validate@v1
+        uses: mbowman100/swagger-validator-action@master
         with:
-          # Проверяем, что Клод не ошибся в синтаксисе YAML перед публикацией
-          definition-file: docs/swagger.yaml
+          files: docs/swagger.yaml
+
+      - name: Deploy to GitHub Pages
+        # Публикуем папку docs на GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
