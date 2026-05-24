@@ -1,0 +1,43 @@
+name: Deploy Swagger Docs via Claude Agent
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        # Устанавливаем библиотеку для работы с API Claude
+        run: pip install anthropic
+
+      - name: Run Claude Agent to Generate Docs
+        env:
+          # Секретный ключ подтягивается из настроек репозитория
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        # Убедитесь, что путь к скрипту указан верно
+        run: python claude_swagger_agent.py
+
+      - name: Validate Swagger/OpenAPI file
+        uses: char0n/swagger-editor-validate@v1
+        with:
+          # Проверяем, что Клод не ошибся в синтаксисе YAML перед публикацией
+          definition-file: docs/swagger.yaml
+
+      - name: Deploy to GitHub Pages
+        # Публикуем папку docs на GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
